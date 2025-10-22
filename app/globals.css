@@ -53,6 +53,14 @@
   --border: 217.2 32.6% 17.5%;
   --input: 217.2 32.6% 17.5%;
   --ring: 212.7 26.8% 83.9%;
+
+  /* MTI Global Color Palette Dark Mode */
+  --mti-blue: 210 73% 75%; /* Lighter blue for dark mode */
+  --mti-blue-light: 210 73% 80%;
+  --mti-blue-dark: 210 73% 70%;
+  --mti-green: 75 58% 40%; /* Darker green for dark mode */
+  --mti-green-dark: 75 58% 35%;
+  --mti-gray: 210 40% 15%; /* Darker gray for dark mode */
 }
 
 @layer base {

@@ -1,119 +1,122 @@
-"use client"
-import React, { useState, FC } from "react"
-import { Button } from "@/components/ui/button"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+'use client'
+import React, { useState, useEffect } from "react"
 import {
   User,
   BookOpen,
-  TrendingUp,
+  KeyRound,
   LogOut,
-  Menu,
-  X,
   Sparkles,
-  Award
+  Award,
+  Video
 } from "lucide-react"
-import Image from "next/image"
-import ProfileSection from "./ProfileSection"
-import CoursesSection from "./CoursesSection"
-import ProgressSection from "./ProgressSection"
-import CertificatesSection from "./CertificatesSection"
+import NewProfileSection from "@/app/estudiante/dashboard/components/NewProfileSection"
+import NewCoursesSection from "@/app/estudiante/dashboard/components/NewCoursesSection"
+import NewCertificatesSection from "@/app/estudiante/dashboard/components/NewCertificatesSection"
+import NewRecommendationsSection from "@/app/estudiante/dashboard/components/NewRecommendationsSection"
+import ActivationSection from "@/app/estudiante/dashboard/components/ActivationSection";
+import StudentVideoCard from "@/app/estudiante/dashboard/components/StudentVideoCard";
 import Chatbot from "./Chatbot"
-import Sidebar from "./Sidebar"
+import IntegratedStudentSidebar from "@/app/estudiante/dashboard/components/IntegratedStudentSidebar"
 import Header from "./Header"
-import { SidebarProps, HeaderProps, StudentData, ActivityItem, Course, ProgressDetails, Certificate, SidebarItem } from "./types"
+import { SidebarItem } from "./types"
+import CourseDetailView from "./CourseDetailView"
+import { useStudentData } from "@/hooks/useStudentData"
 
-// --- DATOS DE PRUEBA AMPLIADOS ---
-const studentData = {
-  name: "Ana García",
-  email: "ana.garcia@gmail.com",
-  role: "Desarrolladora Frontend Jr.",
-  department: "Tecnología e Innovación",
-  supervisor: "Carlos López",
-  avatar: "/student-avatar.png",
-  joinDate: "2023-08-15",
-  lastLogin: "2025-09-12T14:30:00Z",
-  status: "Activo",
-  completedCourses: 2,
-  inProgressCourses: 3,
-  certificatesEarned: 2,
-  totalTimeLearned: "78 Horas",
-};
-
-const activityFeed = [
-    { id: 1, type: "start_course", description: "Inició el curso 'Diseño UI/UX para Developers'", timestamp: "hace 2 horas" },
-    { id: 2, type: "complete_module", description: "Completó el módulo 'Estado y Props' en 'React y Next.js'", timestamp: "ayer" },
-    { id: 3, type: "earn_certificate", description: "Obtuvo el certificado de 'JavaScript Avanzado'", timestamp: "hace 3 días" },
-    { id: 4, type: "start_course", description: "Inició el curso 'Bases de Datos con SQL'", timestamp: "hace 1 semana" },
-];
-
-const courses = [
-    { id: 1, name: "Desarrollo Web Frontend", progress: 80, status: "En progreso", image: "/placeholder.jpg" },
-    { id: 2, name: "JavaScript Avanzado", progress: 100, status: "Completado", image: "/placeholder.jpg" },
-    { id: 3, name: "React y Next.js", progress: 45, status: "En progreso", image: "/placeholder.jpg" },
-    { id: 4, name: "Bases de Datos con SQL", progress: 10, status: "En progreso", image: "/placeholder.jpg" },
-    { id: 5, name: "Diseño UI/UX para Developers", progress: 15, status: "En progreso", image: "/placeholder.jpg" },
-    { id: 6, name: "Metodologías Ágiles (Scrum)", progress: 100, status: "Completado", image: "/placeholder.jpg" },
-];
-
-const progressDetails = {
-    overallProgress: 65,
-    courses: [
-        { name: "Frontend", progress: 80 },
-        { name: "JS Avanzado", progress: 100 },
-        { name: "React", progress: 45 },
-        { name: "UI/UX", progress: 15 },
-    ],
-    timeSpent: [
-        { day: "Lun", hours: 2 }, { day: "Mar", hours: 3 }, { day: "Mié", hours: 1.5 },
-        { day: "Jue", hours: 4 }, { day: "Vie", hours: 2.5 }, { day: "Sáb", hours: 1 },
-    ]
-};
-
-const certificates = [
-    { id: 1, courseName: "JavaScript Avanzado", issueDate: "2024-03-20", credentialId: "JS-ADV-12345" },
-    { id: 2, courseName: "Metodologías Ágiles (Scrum)", issueDate: "2024-01-15", credentialId: "SCRUM-MASTER-67890" },
-];
-
-const sidebarItems = [
-    { id: 'profile', icon: User, label: "Mi Perfil" },
-    { id: 'courses', icon: BookOpen, label: "Mis Cursos" },
-    { id: 'progress', icon: TrendingUp, label: "Mi Progreso" },
-    { id: 'certificates', icon: Award, label: "Certificados" },
-];
-
-const PIE_COLORS = ["hsl(var(--mti-green))", "hsl(var(--mti-blue))", "hsl(var(--mti-blue-light))", "hsl(var(--mti-blue-dark))"];
-
-
-
-
-
-
-// --- COMPONENTE PRINCIPAL DEL DASHBOARD ---
+const sidebarItems: SidebarItem[] = [
+  { id: 'profile', icon: User, label: "Mi Perfil" },
+  { id: 'courses', icon: BookOpen, label: "Mis Cursos" },
+  { id: 'videos', icon: Video, label: "Mis Videos" },
+  { id: 'certificates', icon: Award, label: "Certificados" },
+  { id: 'activate', icon: KeyRound, label: "Activar Curso" },
+  { id: 'recommendations', icon: Sparkles, label: "Recomendaciones" },
+]
 
 export default function StudentDashboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("profile");
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [activeSection, setActiveSection] = useState("profile")
+  const [userId, setUserId] = useState<number | null>(null)
+  const { studentData, courses, myVideos, certificates, activityFeed, loading, refreshData } = useStudentData(userId)
+  const [selectedCourseId, setSelectedCourseId] = useState<number | null>(null)
 
-  const handleLogout = () => { console.log("Logging out student"); window.location.href = "/"; };
-  
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem('user') || '{}')
+    if (user && user.id_usuario) {
+      setUserId(user.id_usuario)
+    }
+  }, [])
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    window.location.href = "/";
+  }
+
+  const handleSelectCourse = (courseId: number) => {
+    setSelectedCourseId(courseId)
+  }
+
+  const handleBackToCourses = () => {
+    setSelectedCourseId(null)
+  }
+
   const renderContent = () => {
-      switch (activeSection) {
-          case 'profile': return <ProfileSection student={studentData} activity={activityFeed} />;
-          case 'courses': return <CoursesSection courses={courses} />;
-          case 'progress': return <ProgressSection progress={progressDetails} />;
-          case 'certificates': return <CertificatesSection certificates={certificates} />;
-          default: return <ProfileSection student={studentData} activity={activityFeed} />;
-      }
-  };
+    if (loading) {
+      return <div>Loading...</div>
+    }
+
+    if (!studentData) {
+      return <div>No student data found.</div>
+    }
+
+    if (activeSection === 'courses' && selectedCourseId) {
+      return <CourseDetailView courseId={selectedCourseId} onBack={handleBackToCourses} />
+    }
+
+    switch (activeSection) {
+      case 'profile':
+        return <NewProfileSection student={studentData} activity={activityFeed} courses={courses} videos={myVideos} />
+      case 'courses':
+        return <NewCoursesSection courses={courses} onCourseSelect={handleSelectCourse} onCourseActivated={refreshData} />
+      case 'videos':
+        return <StudentVideoCard videos={myVideos} onVideoStatusChange={refreshData} />
+      case 'certificates':
+        return <NewCertificatesSection certificates={certificates} studentName={studentData.nombre_completo} />
+      case 'activate':
+        return <ActivationSection />
+      case 'recommendations':
+        return <NewRecommendationsSection />
+      default:
+        return <NewProfileSection student={studentData} activity={activityFeed} courses={courses} videos={myVideos} />
+    }
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      <Sidebar activeSection={activeSection} setActiveSection={setActiveSection} onLogout={handleLogout} isOpen={sidebarOpen} setOpen={setSidebarOpen}/>
-      <div className="lg:ml-64">
-        <Header studentName={studentData.name} avatar={studentData.avatar} onMenuClick={() => setSidebarOpen(true)}/>
-        <main className="p-6">{renderContent()}</main>
+    <div className="min-h-screen bg-muted/40 relative overflow-hidden">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-1/2 -left-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute -bottom-40 right-1/3 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
       </div>
+
+      <IntegratedStudentSidebar
+        sidebarItems={sidebarItems}
+        activeSection={activeSection}
+        setActiveSection={setActiveSection}
+        onLogout={handleLogout}
+        isOpen={sidebarOpen}
+        setOpen={setSidebarOpen}
+      />
+
+      <div className="lg:ml-64 relative z-10">
+        <Header
+          studentName={studentData?.nombre_completo || ''}
+          avatar={studentData?.avatar || ''}
+          onMenuClick={() => setSidebarOpen(true)}
+          title="Panel de Estudiante"
+        />
+        <main className="p-4 sm:p-6 lg:p-8">{renderContent()}</main>
+      </div>
+
       <Chatbot />
     </div>
-  );
+  )
 }

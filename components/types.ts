@@ -1,17 +1,16 @@
 export type StudentData = {
-  name: string;
+  id_usuario: number;
   email: string;
-  role: string;
-  department: string;
-  supervisor: string;
+  nombre_completo: string;
+  telefono: string;
+  ciudad: string;
+  pais: string;
+  rol: string;
+  estado: string;
+  fecha_registro: string;
+  fecha_ultimo_acceso: string;
   avatar: string;
-  joinDate: string;
-  lastLogin: string;
-  status: string;
-  completedCourses: number;
-  inProgressCourses: number;
-  certificatesEarned: number;
-  totalTimeLearned: string;
+  direccion?: string;
 };
 
 export type ActivityItem = {
@@ -22,11 +21,12 @@ export type ActivityItem = {
 };
 
 export type Course = {
-  id: number;
-  name: string;
-  progress: number;
-  status: string;
-  image: string;
+  id_curso: number;
+  titulo: string;
+  descripcion: string;
+  imagen_url: string;
+  progreso: number;
+  estado: string;
 };
 
 export type CourseProgress = {
@@ -66,8 +66,65 @@ export type SidebarProps = {
   setOpen: (isOpen: boolean) => void;
 };
 
-export type HeaderProps = {
-  studentName: string;
+export type HeaderProps = { studentName: string; avatar: string; onMenuClick: () => void; title?: string; };
+
+// Admin types
+export type AdminMetric = {
+  title: string;
+  value: string;
+  icon: any;
+  change: string;
+};
+
+export type AdminUser = {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  status: string;
+  avatar: string;
+};
+
+export type AdminChartData = {
+  month: string;
+  estudiantes: number;
+  cursos: number;
+  videos_vistos?: number;
+  total_videos?: number;
+};
+
+export type AdminPieData = {
+  name: string;
+  value: number;
+  color: string;
+};
+
+export type AdminActivity = {
+  user: string;
+  action: string;
+  course: string;
+  time: string;
+};
+
+export type AdminSidebarProps = {
+  activeSection: string;
+  setActiveSection: (section: string) => void;
+  onLogout: () => void;
+  isOpen: boolean;
+  setOpen: (isOpen: boolean) => void;
+};
+
+export type AdminHeaderProps = {
+  adminName: string;
+  adminEmail: string;
   avatar: string;
   onMenuClick: () => void;
+};
+
+export type StudentSidebarProps = {
+  activeSection: string;
+  setActiveSection: (section: string) => void;
+  onLogout: () => void;
+  isOpen: boolean;
+  setOpen: (isOpen: boolean) => void;
 };
