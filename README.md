@@ -26,44 +26,96 @@ Formación 360 es una plataforma de aprendizaje en línea que permite a estudian
 
 Antes de comenzar, asegúrate de tener instalados los siguientes programas:
 
+### Requisitos Obligatorios
 - **Node.js** (versión 18 o superior) - [Descargar](https://nodejs.org/)
-- **npm** (viene incluido con Node.js)
+  - Verifica la instalación: `node --version`
+- **npm** (viene incluido con Node.js, versión 9+)
+  - Verifica la instalación: `npm --version`
 - **MySQL** (versión 8.0 o superior) - [Descargar](https://www.mysql.com/)
-- **MySQL Workbench** (opcional, para gestión visual de BD) - [Descargar](https://www.mysql.com/products/workbench/)
+  - Verifica la instalación: `mysql --version`
+
+### Requisitos Opcionales pero Recomendados
+- **MySQL Workbench** (para gestión visual de BD) - [Descargar](https://www.mysql.com/products/workbench/)
+- **Git** (para clonar el repositorio) - [Descargar](https://git-scm.com/)
+- **Visual Studio Code** (editor recomendado) - [Descargar](https://code.visualstudio.com/)
+
+### Librerías y Dependencias Principales
+
+#### Frontend (Next.js + React)
+- **Next.js 14.2.5** - Framework React para producción
+- **React 18.3.1** - Biblioteca para interfaces de usuario
+- **Tailwind CSS 3.4+** - Framework CSS utilitario
+- **Radix UI** - Componentes primitivos accesibles
+- **Lucide React** - Iconos SVG
+- **Next Themes** - Soporte para modo claro/oscuro
+- **React Hook Form** - Manejo de formularios
+- **Zod** - Validación de esquemas
+- **Recharts** - Gráficos y visualizaciones
+- **SweetAlert2** - Modales y alertas
+- **Sonner** - Notificaciones toast
+
+#### Backend (Express.js + Node.js)
+- **Express.js 4.21.2** - Framework web minimalista
+- **MySQL2 3.15.0** - Cliente MySQL para Node.js
+- **bcrypt 5.1.1** - Hashing de contraseñas
+- **CORS 2.8.5** - Middleware para CORS
+- **Express Validator 7.0.1** - Validación de datos
+- **Multer 1.4.5** - Manejo de archivos multipart
+- **Dotenv 16.6.1** - Variables de entorno
+- **JWT** (json web tokens) - Autenticación basada en tokens
 
 ## 🚀 Instalación y Configuración
 
-### 1. Clonar el Repositorio
+### Paso 1: Verificar Requisitos Previos
+
+Antes de instalar, verifica que tienes las versiones correctas:
+
+```bash
+# Verificar Node.js y npm
+node --version    # Debe ser 18+
+npm --version     # Debe ser 9+
+
+# Verificar MySQL
+mysql --version   # Debe ser 8.0+
+```
+
+### Paso 2: Clonar el Repositorio
 
 ```bash
 git clone https://github.com/Alejostone1/Formation360.git
 cd Formation360
 ```
 
-### 2. Configurar la Base de Datos
+### Paso 3: Configurar la Base de Datos MySQL
 
-#### Crear la Base de Datos en MySQL
+#### Opción A: Usando MySQL Workbench (Recomendado)
 
-1. Abre MySQL Workbench o la línea de comandos de MySQL
-2. Crea una nueva base de datos llamada `formacion360`:
+1. Abre MySQL Workbench
+2. Conecta a tu servidor MySQL local
+3. Crea una nueva consulta y ejecuta:
 
 ```sql
-CREATE DATABASE formacion360;
+CREATE DATABASE IF NOT EXISTS formacion360 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE formacion360;
 ```
 
-#### Importar el Archivo SQL
+4. Ve a **File > Open SQL Script**
+5. Selecciona el archivo `sqlbd.sql` en la raíz del proyecto
+6. Ejecuta el script (botón de rayo)
 
-1. En MySQL Workbench, selecciona la base de datos `formacion360`
-2. Ve a **File > Open SQL Script** y selecciona el archivo `sqlbd.sql` ubicado en la raíz del proyecto
-3. Ejecuta el script (botón de rayo o Ctrl+Shift+Enter)
-
-O desde línea de comandos:
+#### Opción B: Usando Línea de Comandos
 
 ```bash
-mysql -u [tu_usuario] -p formacion360 < sqlbd.sql
+# Crear base de datos
+mysql -u root -p -e "CREATE DATABASE IF NOT EXISTS formacion360 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+
+# Importar esquema
+mysql -u root -p formacion360 < sqlbd.sql
 ```
 
-### 3. Configurar el Backend
+> **Nota:** Reemplaza `root` con tu usuario de MySQL si es diferente.
+
+### Paso 4: Configurar el Backend
 
 #### Instalar Dependencias del Backend
 
@@ -72,14 +124,23 @@ cd backend
 npm install
 ```
 
+Esto instalará automáticamente todas las dependencias listadas en `backend/package.json`:
+- `express` (servidor web)
+- `mysql2` (conexión a MySQL)
+- `bcrypt` (encriptación de contraseñas)
+- `cors` (manejo de CORS)
+- `dotenv` (variables de entorno)
+- `multer` (subida de archivos)
+- `express-validator` (validación de datos)
+
 #### Configurar Variables de Entorno
 
-Crea un archivo `.env` en la carpeta `backend/` con el siguiente contenido:
+Crea el archivo `.env` en la carpeta `backend/`:
 
 ```env
 # Configuración de la Base de Datos
 DB_HOST=localhost
-DB_USER=tu_usuario_mysql
+DB_USER=root
 DB_PASSWORD=tu_contraseña_mysql
 DB_NAME=formacion360
 DB_PORT=3306
@@ -87,28 +148,45 @@ DB_PORT=3306
 # Puerto del servidor backend
 PORT=3001
 
-# JWT Secret (cambia esto por una clave segura)
-JWT_SECRET=tu_clave_secreta_para_jwt
+# JWT Secret (genera una clave segura aleatoria)
+JWT_SECRET=mi_clave_secreta_super_segura_2024_jwt_token
 ```
 
-> **Nota:** Reemplaza `tu_usuario_mysql`, `tu_contraseña_mysql` y `tu_clave_secreta_para_jwt` con tus valores reales.
+> **Importante:** Nunca subas el archivo `.env` a control de versiones. Ya está incluido en `.gitignore`.
 
 #### Ejecutar el Backend
 
 ```bash
+# Modo desarrollo (con recarga automática)
 npm run dev
+
+# O modo producción
+npm start
 ```
 
 El backend estará disponible en `http://localhost:3001`
 
-### 4. Configurar el Frontend
+### Paso 5: Configurar el Frontend
 
 #### Instalar Dependencias del Frontend
 
 ```bash
-# Desde la raíz del proyecto (o cd .. si estás en backend)
+# Desde la raíz del proyecto
 npm install
 ```
+
+Esto instalará todas las dependencias de Next.js listadas en `package.json`:
+- `next` (framework React)
+- `react` y `react-dom` (biblioteca base)
+- `tailwindcss` (estilos CSS)
+- `@radix-ui/*` (componentes UI)
+- `lucide-react` (iconos)
+- `next-themes` (modo claro/oscuro)
+- `react-hook-form` (manejo de formularios)
+- `zod` (validación)
+- `recharts` (gráficos)
+- `sweetalert2` (alertas)
+- `sonner` (notificaciones)
 
 #### Ejecutar el Frontend
 
@@ -117,6 +195,35 @@ npm run dev
 ```
 
 El frontend estará disponible en `http://localhost:3000`
+
+### Paso 6: Verificar la Instalación
+
+1. Abre tu navegador en `http://localhost:3000`
+2. Deberías ver la página principal de Formación 360
+3. Prueba registrarte como estudiante
+4. Verifica que el backend responde en `http://localhost:3001/test-db`
+
+### Solución de Problemas Comunes
+
+#### Error de conexión a MySQL
+- Verifica que MySQL esté ejecutándose
+- Confirma las credenciales en `.env`
+- Asegúrate de que el usuario tenga permisos
+
+#### Puerto ocupado
+- Cambia el puerto en `.env` (PORT=3002)
+- O mata el proceso usando el puerto: `npx kill-port 3001`
+
+#### Dependencias faltantes
+```bash
+# Limpiar cache y reinstalar
+rm -rf node_modules package-lock.json
+npm install
+```
+
+#### Error de CORS
+- Asegúrate de que el backend esté ejecutándose en el puerto correcto
+- Verifica la URL del backend en las llamadas fetch del frontend
 
 ## 📁 Estructura del Proyecto
 
