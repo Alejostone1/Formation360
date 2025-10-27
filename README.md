@@ -82,7 +82,7 @@ mysql --version   # Debe ser 8.0+
 ### Paso 2: Clonar el Repositorio
 
 ```bash
-git clone https://github.com/Alejostone1/Formation360.git
+git clone https://github.com/XAlejoShot/Formation360.git
 cd Formation360
 ```
 
