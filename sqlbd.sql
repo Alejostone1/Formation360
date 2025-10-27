@@ -189,3 +189,13 @@ CREATE TABLE actividades (
     INDEX idx_tipo (tipo_actividad),
     INDEX idx_fecha (fecha_actividad)
 );
+
+CREATE TABLE hero_images (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    image_url VARCHAR(255) NOT NULL COMMENT 'Ruta o URL de la imagen',
+    titulo VARCHAR(150) NULL COMMENT 'Título opcional para la imagen',
+    descripcion VARCHAR(255) NULL COMMENT 'Descripción opcional',
+    estado ENUM('activo', 'inactivo') DEFAULT 'inactivo' COMMENT 'Controla cuál imagen se usa en el Hero',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);

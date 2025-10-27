@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, AreaChart, Area, ComposedChart, PieChart, Pie, Cell } from "recharts"
 import { TrendingUp, Users, BookOpen, Activity, Target, Award, Calendar, BarChart3, Settings, Download, RefreshCw } from "lucide-react"
+import * as XLSX from 'xlsx'
 import { AdminChartData } from "./types"
 
 type AdminStatsSectionProps = {
@@ -96,6 +97,35 @@ const AdminStatsSection: FC<AdminStatsSectionProps> = ({ chartData }) => {
     firstCursos: filteredData[0]?.cursos,
     lastCursos: filteredData[filteredData.length - 1]?.cursos
   })
+
+  // Export function
+  const handleExport = () => {
+    // Prepare data for export with additional summary information
+    const exportData = [
+      { 'Métrica': 'Total Estudiantes', 'Valor': totalEstudiantes },
+      { 'Métrica': 'Total Cursos', 'Valor': totalCursos },
+      { 'Métrica': 'Total Videos Vistos', 'Valor': totalVideosVistos },
+      { 'Métrica': 'Total Videos', 'Valor': totalVideos },
+      { 'Métrica': 'Promedio Estudiantes por Mes', 'Valor': avgEstudiantes },
+      { 'Métrica': 'Promedio Cursos por Mes', 'Valor': avgCursos },
+      { 'Métrica': 'Crecimiento Estudiantes (%)', 'Valor': estudiantesGrowth },
+      { 'Métrica': 'Crecimiento Cursos (%)', 'Valor': cursosGrowth },
+      { 'Métrica': 'Periodo Analizado (meses)', 'Valor': filteredData.length },
+      {}, // Empty row for separation
+      ...filteredData.map(item => ({
+        'Mes': item.month,
+        'Estudiantes': item.estudiantes,
+        'Cursos': item.cursos,
+        'Videos Vistos': item.videos_vistos || 0,
+        'Videos Totales': item.total_videos || 0
+      }))
+    ]
+
+    const ws = XLSX.utils.json_to_sheet(exportData)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Estadísticas Formación 360')
+    XLSX.writeFile(wb, `estadisticas_formacion360_${new Date().toISOString().split('T')[0]}.xlsx`)
+  }
 
   // Prepare data for different chart types
   const getChartData = (): AdminChartData[] | PieDataItem[] => {
@@ -330,7 +360,11 @@ const AdminStatsSection: FC<AdminStatsSectionProps> = ({ chartData }) => {
             <Target className="w-4 h-4 mr-1" />
             Promedios
           </Button>
-          <Button variant="outline" size="sm">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExport}
+          >
             <Download className="w-4 h-4 mr-1" />
             Exportar
           </Button>

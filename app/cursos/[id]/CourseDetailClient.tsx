@@ -40,7 +40,7 @@ export default function CourseDetailClient({ course }: { course: CourseData }) {
         <div className="lg:col-span-3">
           <div className="prose dark:prose-invert max-w-none">
             <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">{course.titulo}</h1>
-            <p className="text-xl leading-8 text-muted-foreground">{course.descripcion}</p>
+            <p className="text-xl leading-8 text-muted-foreground whitespace-pre-wrap">{course.descripcion}</p>
 
             <h2 className="mt-12 text-3xl font-bold">Temario del Curso</h2>
             <Accordion type="single" collapsible className="w-full mt-6" defaultValue="item-0">
@@ -53,7 +53,7 @@ export default function CourseDetailClient({ course }: { course: CourseData }) {
                     </div>
                   </AccordionTrigger>
                   <AccordionContent className="pl-4">
-                    <p className="text-base text-muted-foreground mb-4">{module.descripcion}</p>
+                    <p className="text-base text-muted-foreground mb-4 whitespace-pre-wrap">{module.descripcion}</p>
                     <ul className="space-y-2">
                       {module.videos.map((video) => (
                         <li key={video.id_video} className="flex items-center gap-3 p-2 rounded-md bg-muted/50">

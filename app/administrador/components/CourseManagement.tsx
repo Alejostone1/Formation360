@@ -92,6 +92,25 @@ export default function CourseManagement() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Validation
+    if (!formData.titulo.trim()) {
+      alert('El título del curso es obligatorio.');
+      return;
+    }
+    if (!formData.descripcion.trim()) {
+      alert('La descripción del curso es obligatoria.');
+      return;
+    }
+    if (!formData.id_categoria) {
+      alert('Debe seleccionar una categoría.');
+      return;
+    }
+    if (!formData.precio || isNaN(Number(formData.precio)) || Number(formData.precio) < 0) {
+      alert('El precio debe ser un número válido mayor o igual a 0.');
+      return;
+    }
+
     const data = new FormData();
     data.append('titulo', formData.titulo);
     data.append('descripcion', formData.descripcion);
@@ -116,9 +135,12 @@ export default function CourseManagement() {
         fetchCursos();
         setIsDialogOpen(false);
         resetForm();
+      } else {
+        alert('Error al guardar el curso. Por favor, inténtelo de nuevo.');
       }
     } catch (error) {
       console.error('Error saving curso:', error);
+      alert('Error de conexión. Por favor, inténtelo de nuevo.');
     }
   }
 
@@ -228,7 +250,13 @@ export default function CourseManagement() {
             </div>
             <div>
                 <label className="block text-sm font-medium mb-1 text-gray-700 dark:text-gray-300">Descripción</label>
-                <Textarea value={formData.descripcion} onChange={(e) => setFormData({...formData, descripcion: e.target.value})} rows={4} className="bg-gray-50 dark:bg-gray-700" />
+                <Textarea
+                  value={formData.descripcion}
+                  onChange={(e) => setFormData({...formData, descripcion: e.target.value})}
+                  rows={6}
+                  className="bg-gray-50 dark:bg-gray-700 whitespace-pre-wrap"
+                  placeholder="Describe el curso. Puedes usar espacios, bullet points (- item) o presionar Enter para nuevas líneas."
+                />
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div>
@@ -292,7 +320,7 @@ export default function CourseManagement() {
                     <CardContent className="p-6 flex flex-col flex-grow">
                       <div className="flex-grow">
                           <CardTitle className="text-2xl font-bold text-gray-800 dark:text-white mt-2 mb-3">{curso.titulo}</CardTitle>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 h-12 overflow-hidden">{curso.descripcion}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mb-4 h-12 overflow-hidden whitespace-pre-wrap">{curso.descripcion}</p>
 
                       </div>
                       <div className="flex justify-between items-center text-sm text-gray-500 dark:text-gray-400 pt-4 border-t border-gray-200 dark:border-gray-700">

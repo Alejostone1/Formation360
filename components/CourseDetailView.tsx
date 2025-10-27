@@ -99,19 +99,19 @@ const CourseDetailView: FC<CourseDetailViewProps> = ({ courseId, onBack }) => {
   if (!courseData) return <div className="text-center py-10">No se encontraron datos del curso.</div>;
 
   return (
-    <div className="animate-fade-in-up">
+    <div className="animate-fade-in-up text-foreground">
       <Button onClick={onBack} variant="ghost" className="mb-4">
         <ArrowLeft className="w-4 h-4 mr-2" />
         Volver a Mis Cursos
       </Button>
-      
-      <div className="bg-card p-6 rounded-lg shadow-sm border mb-6">
+
+      <div className="bg-card p-6 rounded-lg shadow-sm border dark:border-slate-800 mb-6">
         <h1 className="text-3xl font-bold text-foreground">{courseData.titulo}</h1>
         <p className="mt-2 text-muted-foreground">{courseData.descripcion}</p>
       </div>
 
       <div className="mt-6">
-        <h2 className="text-2xl font-bold text-foreground mb-4">Contenido del Curso</h2>
+        <h2 className="text-2xl font-bold mb-4">Contenido del Curso</h2>
         <Accordion type="single" collapsible className="w-full" defaultValue="item-0">
           {courseData.modulos.map((module, index) => (
             <AccordionItem value={`item-${index}`} key={module.id_modulo}>
@@ -121,22 +121,22 @@ const CourseDetailView: FC<CourseDetailViewProps> = ({ courseId, onBack }) => {
                     <span>{module.titulo}</span>
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="pl-2">
+              <AccordionContent className="pl-2 bg-slate-100/50 dark:bg-slate-800/30 rounded-b-md">
                 <p className="text-sm text-muted-foreground mb-4 ml-2">{module.descripcion}</p>
                 <ul className="space-y-1">
                   {module.videos.map((video) => {
                     const isSeen = seenVideos.has(video.id_video);
                     return (
-                      <li key={video.id_video} className={`flex items-center gap-3 p-2 rounded-md transition-colors ${isSeen ? 'text-muted-foreground' : 'text-foreground'}`}>
+                      <li key={video.id_video} className={`flex items-center gap-3 p-2 rounded-md transition-colors ${isSeen ? 'text-muted-foreground' : ''}`}>
                         <Checkbox
                           id={`video-${video.id_video}`}
                           checked={isSeen}
                           onCheckedChange={(checked) => handleToggleSeen(video.id_video, !!checked)}
                         />
-                        <label 
+                        <label
                           htmlFor={`video-${video.id_video}`}
                           onClick={() => setSelectedVideo(video)}
-                          className="flex-grow flex items-center gap-3 cursor-pointer hover:text-primary"
+                          className="flex-grow flex items-center gap-3 cursor-pointer hover:text-primary dark:hover:text-primary-light"
                         >
                           {isSeen ? <CheckCircle2 className="w-5 h-5 text-primary" /> : <PlayCircle className="w-5 h-5 text-primary/70" />}
                           <span className={`font-medium ${isSeen ? 'line-through' : ''}`}>{video.titulo}</span>

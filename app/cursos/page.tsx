@@ -68,7 +68,7 @@ export default function CursosPage() {
                 </CardHeader>
                 <CardContent className="p-6 flex-grow flex flex-col">
                   <CardTitle className="text-xl font-bold mb-2">{curso.titulo}</CardTitle>
-                  <CardDescription className="text-muted-foreground line-clamp-3 flex-grow">
+                  <CardDescription className="text-muted-foreground line-clamp-3 flex-grow whitespace-pre-wrap">
                     {curso.descripcion}
                   </CardDescription>
                   <div className="mt-4 text-primary font-semibold">

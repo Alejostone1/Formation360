@@ -68,7 +68,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete, onView }
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead>
-            <tr className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+            <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700">
               <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                 ID
               </th>
@@ -103,7 +103,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete, onView }
               users.map((user, index) => (
                 <tr
                   key={user.id_usuario}
-                  className="hover:bg-gray-50 dark:hover:bg-gray-750 transition-colors duration-150"
+                  className="hover:bg-gray-50 dark:hover:bg-gray-900 transition-colors duration-150"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">

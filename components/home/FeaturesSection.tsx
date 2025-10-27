@@ -42,7 +42,7 @@ export function FeaturesSection() {
   ];
 
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-white to-gray-50 dark:from-gray-900 dark:to-gray-800">
+    <section id="features" className="w-full py-12 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-800">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-6 text-center">
           <div className="space-y-4">
@@ -107,11 +107,14 @@ export function FeaturesSection() {
 
         {/* Call to action section */}
         <div className="text-center mt-16">
-          <div className="inline-flex items-center px-6 py-3 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 cursor-pointer animate-pulse">
-            <Clock className="w-5 h-5 mr-2" />
-            ¡Comienza tu transformación hoy mismo!
-            <span className="ml-2">→</span>
-          </div>
+          <a
+            href="/register"
+            className="group inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-gray-800 to-blue-900 text-white font-bold shadow-lg hover:shadow-xl hover:from-gray-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 ease-in-out"
+          >
+            <Zap className="w-6 h-6 mr-3 transform group-hover:scale-110 transition-transform duration-300" />
+            <span className="text-lg">¡Comienza tu transformación hoy!</span>
+            <span className="ml-3 transform group-hover:translate-x-1 transition-transform duration-300">→</span>
+          </a>
         </div>
       </div>
     </section>

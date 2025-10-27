@@ -42,6 +42,7 @@ export default function CertificadosManagement() {
   const [filterCurso, setFilterCurso] = useState('')
   const [showForm, setShowForm] = useState(false)
   const [editingItem, setEditingItem] = useState<Certificado | null>(null)
+  const [codeGenerated, setCodeGenerated] = useState(false)
 
   const [formData, setFormData] = useState({
     id_usuario: '',
@@ -177,11 +178,13 @@ export default function CertificadosManagement() {
       nombre_certificado: '',
       estado: 'activo'
     })
+    setCodeGenerated(false)
   }
 
   const generateCode = () => {
     const code = certificadosUtils.generarCodigoCertificado()
     setFormData({...formData, codigo_certificado: code})
+    setCodeGenerated(true)
   }
 
   if (loading) {
@@ -190,61 +193,67 @@ export default function CertificadosManagement() {
 
   return (
     <div className={styles.container}>
-      <div className={styles.header}>
-        <div className={styles.filters}>
-          <input
-            type="text"
-            placeholder="Buscar por usuario, curso, email o código..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className={styles.searchInput}
-          />
-          <select
-            value={filterEstado}
-            onChange={(e) => setFilterEstado(e.target.value)}
-            className={styles.filterSelect}
-          >
-            <option value="">Todos los estados</option>
-            <option value="activo">Activo</option>
-            <option value="revocado">Revocado</option>
-          </select>
-          <select
-            value={filterUsuario}
-            onChange={(e) => setFilterUsuario(e.target.value)}
-            className={styles.filterSelect}
-          >
-            <option value="">Todos los usuarios</option>
-            {users.map(user => (
-              <option key={user.id_usuario} value={user.id_usuario}>
-                {user.nombre_completo}
-              </option>
-            ))}
-          </select>
-          <select
-            value={filterCurso}
-            onChange={(e) => setFilterCurso(e.target.value)}
-            className={styles.filterSelect}
-          >
-            <option value="">Todos los cursos</option>
-            {cursos.map(curso => (
-              <option key={curso.id_curso} value={curso.id_curso}>
-                {curso.titulo}
-              </option>
-            ))}
-          </select>
+      <div className={`${styles.header} bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700`}>
+        <div className={styles.filtersSection}>
+          <div className={styles.searchWrapper}>
+            <input
+              type="text"
+              placeholder="Buscar por usuario, curso, email o código..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={`${styles.searchInput} bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400`}
+            />
+          </div>
+          <div className={styles.filtersRow}>
+            <select
+              value={filterEstado}
+              onChange={(e) => setFilterEstado(e.target.value)}
+              className={`${styles.filterSelect} bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100`}
+            >
+              <option value="">Todos los estados</option>
+              <option value="activo">Activo</option>
+              <option value="revocado">Revocado</option>
+            </select>
+            <select
+              value={filterUsuario}
+              onChange={(e) => setFilterUsuario(e.target.value)}
+              className={`${styles.filterSelect} bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100`}
+            >
+              <option value="">Todos los usuarios</option>
+              {users.map(user => (
+                <option key={user.id_usuario} value={user.id_usuario}>
+                  {user.nombre_completo}
+                </option>
+              ))}
+            </select>
+            <select
+              value={filterCurso}
+              onChange={(e) => setFilterCurso(e.target.value)}
+              className={`${styles.filterSelect} bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-100`}
+            >
+              <option value="">Todos los cursos</option>
+              {cursos.map(curso => (
+                <option key={curso.id_curso} value={curso.id_curso}>
+                  {curso.titulo}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-        <button
-          onClick={() => {
-            setShowForm(!showForm)
-            if (!showForm) {
-              setEditingItem(null)
-              resetForm()
-            }
-          }}
-          className={styles.addButton}
-        >
-          {showForm ? 'Cancelar' : 'Agregar Nuevo'}
-        </button>
+        <div className={styles.actionsSection}>
+          <button
+            onClick={() => {
+              setShowForm(!showForm)
+              if (!showForm) {
+                setEditingItem(null)
+                resetForm()
+              }
+            }}
+            className={styles.addButton}
+          >
+            {showForm ? 'Cancelar' : 'Agregar Nuevo'}
+          </button>
+        </div>
       </div>
 
       {error && (
@@ -316,6 +325,7 @@ export default function CertificadosManagement() {
                   className={styles.input}
                   required
                   style={{ flex: 1 }}
+                  disabled={codeGenerated}
                 />
                 <button
                   type="button"
@@ -362,9 +372,9 @@ export default function CertificadosManagement() {
 
       <div className={styles.grid}>
         {filteredCertificados.map((item) => (
-          <div key={item.id_certificado} className={styles.card}>
-            <div className={styles.cardHeader}>
-              <h3 className={styles.cardTitle}>
+          <div key={item.id_certificado} className={`${styles.card} bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700`}>
+            <div className={`${styles.cardHeader} bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600`}>
+              <h3 className={`${styles.cardTitle} text-gray-900 dark:text-white`}>
                 {item.nombre_completo}
               </h3>
               <span className={`${styles.badge} ${item.estado === 'activo' ? styles.badgeActivo : styles.badgeRevocado}`}>
@@ -373,21 +383,21 @@ export default function CertificadosManagement() {
             </div>
 
             <div className={styles.cardContent}>
-              <p className={styles.cardText}>
-                <strong>Email:</strong> {item.email}
+              <p className={`${styles.cardText} text-gray-600 dark:text-gray-300`}>
+                <strong className="text-gray-900 dark:text-gray-100">Email:</strong> {item.email}
               </p>
-              <p className={styles.cardText}>
-                <strong>Curso:</strong> {item.curso_titulo}
+              <p className={`${styles.cardText} text-gray-600 dark:text-gray-300`}>
+                <strong className="text-gray-900 dark:text-gray-100">Curso:</strong> {item.curso_titulo}
               </p>
-              <p className={styles.cardText}>
-                <strong>Código:</strong> {item.codigo_certificado}
+              <p className={`${styles.cardText} text-gray-600 dark:text-gray-300`}>
+                <strong className="text-gray-900 dark:text-gray-100">Código:</strong> {item.codigo_certificado}
               </p>
-              <p className={styles.cardText}>
-                <strong>Fecha de emisión:</strong> {certificadosUtils.formatFechaEmision(item.fecha_emision)}
+              <p className={`${styles.cardText} text-gray-600 dark:text-gray-300`}>
+                <strong className="text-gray-900 dark:text-gray-100">Fecha de emisión:</strong> {certificadosUtils.formatFechaEmision(item.fecha_emision)}
               </p>
             </div>
 
-            <div className={styles.cardActions}>
+            <div className={`${styles.cardActions} bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600`}>
               <button
                 onClick={() => certificadosUtils.descargarCertificado(
                   item.nombre_completo,
@@ -396,19 +406,19 @@ export default function CertificadosManagement() {
                   item.fecha_emision,
                   item.nombre_certificado
                 )}
-                className={styles.editButton}
+                className={`${styles.editButton} bg-blue-600 hover:bg-blue-700 text-white`}
               >
                 Descargar
               </button>
               <button
                 onClick={() => handleEdit(item)}
-                className={styles.editButton}
+                className={`${styles.editButton} bg-gray-600 hover:bg-gray-700 text-white`}
               >
                 Editar
               </button>
               <button
                 onClick={() => handleDelete(item.id_certificado)}
-                className={styles.deleteButton}
+                className={`${styles.deleteButton} bg-red-600 hover:bg-red-700 text-white`}
               >
                 Eliminar
               </button>

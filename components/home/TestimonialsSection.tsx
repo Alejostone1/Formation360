@@ -1,5 +1,5 @@
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Star, Quote, Heart, Sparkles } from "lucide-react";
+import { Star, Quote, Heart, Sparkles, Users } from "lucide-react";
 
 export function TestimonialsSection() {
   const testimonials = [
@@ -45,7 +45,7 @@ export function TestimonialsSection() {
   ];
 
   return (
-    <section className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-white to-purple-50 dark:from-gray-900 dark:to-purple-900/20 relative overflow-hidden">
+    <section id="testimonials" className="w-full py-12 md:py-24 lg:py-32 bg-gradient-to-b from-white to-purple-50 dark:from-gray-900 dark:to-purple-900/20 relative overflow-hidden">
       {/* Background decorative elements */}
       <div className="absolute top-10 right-10 w-24 h-24 bg-gradient-to-r from-yellow-200 to-orange-200 rounded-full blur-2xl opacity-40 animate-pulse"></div>
       <div className="absolute bottom-10 left-10 w-32 h-32 bg-gradient-to-r from-purple-200 to-pink-200 rounded-full blur-2xl opacity-30 animate-pulse" style={{ animationDelay: '2s' }}></div>
@@ -144,11 +144,14 @@ export function TestimonialsSection() {
 
         {/* Call to action */}
         <div className="text-center mt-16">
-          <div className="inline-flex items-center px-8 py-4 rounded-full bg-gradient-to-r from-purple-600 via-pink-600 to-orange-600 text-white font-bold text-lg shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105 cursor-pointer animate-pulse">
-            <Sparkles className="w-6 h-6 mr-3" />
-            ¡Únete a nuestra comunidad!
-            <span className="ml-3 text-xl">🌟</span>
-          </div>
+          <a
+            href="/register"
+            className="group inline-flex items-center justify-center px-8 py-4 rounded-full bg-gradient-to-r from-gray-800 to-blue-900 text-white font-bold shadow-lg hover:shadow-xl hover:from-gray-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-300 ease-in-out"
+          >
+            <Users className="w-6 h-6 mr-3 transform group-hover:scale-110 transition-transform duration-300" />
+            <span className="text-lg">¡Únete a nuestra comunidad!</span>
+            <span className="ml-3 transform group-hover:translate-x-1 transition-transform duration-300">→</span>
+          </a>
         </div>
       </div>
     </section>

@@ -12,6 +12,9 @@ import { getEstadoColor, filtrarVideosPorEstado, filtrarVideosPorModulo } from '
 import styles from '../videos/styles/videos.module.css'
 import Image from 'next/image'
 import { Expand, X } from 'lucide-react'
+import { useToast } from '@/components/ui/use-toast'
+import dynamic from 'next/dynamic'
+import 'react-quill/dist/quill.snow.css'
 
 // Interfaces
 interface Video {
@@ -69,7 +72,11 @@ const filtrarVideosPorCurso = (videos: Video[], idCurso: string) => {
   return videos.filter(video => video.id_curso === parseInt(idCurso, 10))
 }
 
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false })
+
 export default function VideoManagement() {
+  const { toast } = useToast()
+
   // State
   const [videos, setVideos] = useState<Video[]>([])
   const [modulos, setModulos] = useState<Modulo[]>([])
@@ -136,13 +143,13 @@ export default function VideoManagement() {
           setter(data)
         } catch (e) {
           console.error('Error processing data:', e)
-          alert('Error al procesar los datos.')
+          toast({ title: "Error", description: 'Error al procesar los datos.', variant: "destructive" })
         }
       } else {
-        alert(errorMsg)
+        toast({ title: "Error", description: errorMsg, variant: "destructive" })
       }
     } catch (error) {
-      alert('Error de conexión')
+      toast({ title: "Error", description: 'Error de conexión', variant: "destructive" })
     }
   }
 
@@ -216,16 +223,16 @@ export default function VideoManagement() {
       const method = editingVideo ? 'PUT' : 'POST'
       const response = await fetch(url, { method, body: formData })
       if (response.ok) {
-        alert(editingVideo ? 'Video actualizado' : 'Video creado')
+        toast({ title: "Éxito", description: editingVideo ? 'Video actualizado' : 'Video creado' })
         setIsDialogOpen(false)
         fetchVideos()
         resetForm()
       } else {
         const errorData = await response.json()
-        alert(errorData.error || 'Error al guardar')
+        toast({ title: "Error", description: errorData.error || 'Error al guardar', variant: "destructive" })
       }
     } catch (error) {
-      alert('Error de conexión')
+      toast({ title: "Error", description: 'Error de conexión', variant: "destructive" })
     }
   }
 
@@ -234,13 +241,13 @@ export default function VideoManagement() {
     try {
       const res = await fetch(`http://localhost:3001/videos/${id}`, { method: 'DELETE' })
       if (res.ok) {
-        alert('Video eliminado')
+        toast({ title: "Éxito", description: 'Video eliminado' })
         fetchVideos()
       } else {
-        alert('Error al eliminar')
+        toast({ title: "Error", description: 'Error al eliminar', variant: "destructive" })
       }
     } catch (error) {
-      alert('Error de conexión')
+      toast({ title: "Error", description: 'Error de conexión', variant: "destructive" })
     }
   }
 
@@ -265,7 +272,7 @@ export default function VideoManagement() {
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h2 className="text-2xl font-bold">Gestión de Videos</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Gestión de Videos</h2>
         <div className="flex gap-2">
           <Select onValueChange={setFiltroCurso} value={filtroCurso}>
             <SelectTrigger className="w-[160px]">
@@ -431,10 +438,20 @@ export default function VideoManagement() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-1">Descripción</label>
-                  <Textarea
+                  <ReactQuill
                     value={editForm.descripcion}
-                    onChange={(e) => setEditForm({ ...editForm, descripcion: e.target.value })}
-                    rows={3}
+                    onChange={(value) => setEditForm({ ...editForm, descripcion: value })}
+                    theme="snow"
+                    modules={{
+                      toolbar: [
+                        [{ 'header': [1, 2, false] }],
+                        ['bold', 'italic', 'underline', 'strike'],
+                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                        ['link'],
+                        ['clean']
+                      ],
+                    }}
+                    placeholder="Escribe la descripción del video..."
                   />
                 </div>
               </div>
@@ -553,44 +570,47 @@ export default function VideoManagement() {
       <div className="space-y-10">
         {Object.entries(videosAgrupados).map(([cursoTitulo, videosDelCurso]) => (
           <section key={cursoTitulo}>
-            <h3 className="text-2xl font-bold mb-4 border-b pb-2">{cursoTitulo}</h3>
+            <h3 className="text-2xl font-bold mb-4 border-b pb-2 text-gray-900 dark:text-white">{cursoTitulo}</h3>
             <div className={styles.gridVideos}>
               {videosDelCurso.map((video) => {
                 const embedUrl = getYoutubeEmbedUrl(video.video_url)
                 return (
-                  <Card key={video.id_video} className={`${styles.videoCard} bg-white dark:bg-gray-800 flex flex-col overflow-hidden`}>
-                    {/* 1. Image section */}
-                    <div className="relative w-full aspect-video group border-b-4 border-gray-200 dark:border-gray-700" onClick={() => { if (video.thumbnail_url) { setZoomedThumbnailUrl(getFullFileUrl(video.thumbnail_url)) } }}>
-                        <Image
-                            src={video.thumbnail_url ? getFullFileUrl(video.thumbnail_url) : '/placeholder.jpg'}
-                            alt={video.titulo}
-                            layout="fill"
-                            objectFit="cover"
-                        />
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
-                            <Expand className="w-10 h-10 text-white"/>
-                        </div>
-                    </div>
+                  <Card key={video.id_video} className={`${styles.videoCard} bg-white dark:bg-gray-800 border-0 flex flex-col overflow-hidden`}>
+                    {/* Media section: Image and Video side-by-side */}
+                    <div className="flex flex-row">
+                      {/* 1. Image section */}
+                      <div className="relative w-1/2 aspect-video group border-b-4 border-gray-200 dark:border-gray-700 border-r-4 border-gray-200 dark:border-gray-700" onClick={() => { if (video.thumbnail_url) { setZoomedThumbnailUrl(getFullFileUrl(video.thumbnail_url)) } }}>
+                          <Image
+                              src={video.thumbnail_url ? getFullFileUrl(video.thumbnail_url) : '/placeholder.jpg'}
+                              alt={video.titulo}
+                              layout="fill"
+                              objectFit="cover"
+                          />
+                          <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer">
+                              <Expand className="w-10 h-10 text-white"/>
+                          </div>
+                      </div>
 
-                    {/* 2. Video section */}
-                    <div className="w-full aspect-video">
-                        {embedUrl ? (
-                            <iframe
-                                src={embedUrl}
-                                title={video.titulo}
-                                frameBorder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                allowFullScreen
-                                className="w-full h-full"
-                            />
-                        ) : (
-                            <video
-                                src={getFullFileUrl(video.video_url)}
-                                controls
-                                poster={video.thumbnail_url ? getFullFileUrl(video.thumbnail_url) : undefined}
-                                className="w-full h-full object-cover"
-                            />
-                        )}
+                      {/* 2. Video section */}
+                      <div className="w-1/2 aspect-video">
+                          {embedUrl ? (
+                              <iframe
+                                  src={embedUrl}
+                                  title={video.titulo}
+                                  frameBorder="0"
+                                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                  allowFullScreen
+                                  className="w-full h-full"
+                              />
+                          ) : (
+                              <video
+                                  src={getFullFileUrl(video.video_url)}
+                                  controls
+                                  poster={video.thumbnail_url ? getFullFileUrl(video.thumbnail_url) : undefined}
+                                  className="w-full h-full object-cover"
+                              />
+                          )}
+                      </div>
                     </div>
 
                     {/* 3. Information section */}
@@ -610,11 +630,9 @@ export default function VideoManagement() {
                         </CardHeader>
                         <CardContent className="p-4 pt-0">
                             {video.descripcion && (
-                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-2 line-clamp-3">
-                                    {video.descripcion}
-                                </p>
+                                <div className="text-sm text-gray-600 dark:text-gray-400 mb-2 line-clamp-3" dangerouslySetInnerHTML={{ __html: video.descripcion }} />
                             )}
-                            <div className="text-xs text-gray-500">
+                            <div className="text-xs text-gray-500 dark:text-gray-400">
                                 <span className="font-semibold">Orden:</span> {video.numero_orden}
                             </div>
                         </CardContent>

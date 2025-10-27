@@ -73,110 +73,124 @@ export const generarCertificadoPDF = async (
   alert(`Generando certificado PDF para ${nombreUsuario} - ${tituloCurso}`);
 };
 
-export const descargarCertificado = (
+export const descargarCertificado = async (
   nombreUsuario: string,
   tituloCurso: string,
   codigoCertificado: string,
   fechaEmision: string,
   nombreCertificado?: string
-): void => {
-  // Crear un canvas para generar la imagen del certificado
-  const canvas = document.createElement('canvas');
-  canvas.width = 1200;
-  canvas.height = 800;
-  const ctx = canvas.getContext('2d');
+): Promise<void> => {
+  try {
+    // Importar jsPDF dinámicamente
+    const { jsPDF } = await import('jspdf');
+    const html2canvas = (await import('html2canvas')).default;
 
-  if (!ctx) return;
+    // Crear un elemento HTML temporal para el certificado
+    const certificadoDiv = document.createElement('div');
+    certificadoDiv.style.width = '1200px';
+    certificadoDiv.style.height = '800px';
+    certificadoDiv.style.position = 'absolute';
+    certificadoDiv.style.left = '-9999px';
+    certificadoDiv.style.top = '-9999px';
+    certificadoDiv.style.background = 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)';
+    certificadoDiv.style.border = '8px solid #ffd700';
+    certificadoDiv.style.borderRadius = '20px';
+    certificadoDiv.style.padding = '40px';
+    certificadoDiv.style.boxSizing = 'border-box';
+    certificadoDiv.style.fontFamily = 'Georgia, serif';
+    certificadoDiv.style.display = 'flex';
+    certificadoDiv.style.flexDirection = 'column';
+    certificadoDiv.style.justifyContent = 'space-between';
+    certificadoDiv.style.alignItems = 'center';
+    certificadoDiv.style.textAlign = 'center';
 
-  // Gradiente de fondo elegante
-  const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-  gradient.addColorStop(0, '#f8f9fa');
-  gradient.addColorStop(1, '#e9ecef');
-  ctx.fillStyle = gradient;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Contenido del certificado
+    certificadoDiv.innerHTML = `
+      <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+        <div style="font-size: 48px; font-weight: bold; color: #1a365d; margin-bottom: 20px;">
+          🏆 FORMACIÓN 360
+        </div>
 
-  // Borde dorado elegante
-  ctx.strokeStyle = '#ffd700';
-  ctx.lineWidth = 8;
-  ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
+        <div style="font-size: 32px; font-style: italic; color: #2d3748; margin-bottom: 40px;">
+          Certificado de Excelencia Académica
+        </div>
 
-  // Borde interno azul
-  ctx.strokeStyle = '#007bff';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+        <div style="font-size: 24px; color: #4a5568; margin-bottom: 30px;">
+          La Dirección Académica certifica que
+        </div>
 
-  // Logo/Encabezado
-  ctx.fillStyle = '#1a365d';
-  ctx.font = 'bold 48px Georgia, serif';
-  ctx.textAlign = 'center';
-  ctx.fillText('🏆 FORMACIÓN 360', canvas.width / 2, 100);
+        <div style="font-size: 42px; font-weight: bold; color: #1a202c; margin-bottom: 30px; text-transform: uppercase;">
+          ${nombreCertificado || nombreUsuario}
+        </div>
 
-  // Subtítulo con estilo
-  ctx.fillStyle = '#2d3748';
-  ctx.font = 'italic 32px Georgia, serif';
-  ctx.fillText('Certificado de Excelencia Académica', canvas.width / 2, 150);
+        <div style="font-size: 24px; color: #4a5568; margin-bottom: 30px;">
+          ha completado satisfactoriamente el curso de
+        </div>
 
-  // Texto introductorio
-  ctx.fillStyle = '#4a5568';
-  ctx.font = '24px Arial, sans-serif';
-  ctx.fillText('La Dirección Académica certifica que', canvas.width / 2, 220);
+        <div style="font-size: 36px; font-weight: bold; color: #2b6cb0; margin-bottom: 40px;">
+          "${tituloCurso}"
+        </div>
 
-  // Nombre del estudiante (destacado)
-  ctx.fillStyle = '#1a202c';
-  ctx.font = 'bold 42px Georgia, serif';
-  ctx.fillText((nombreCertificado || nombreUsuario).toUpperCase(), canvas.width / 2, 280);
+        <div style="font-size: 20px; color: #718096; margin-bottom: 10px;">
+          Código de Verificación: ${codigoCertificado}
+        </div>
 
-  // Texto del curso
-  ctx.fillStyle = '#4a5568';
-  ctx.font = '24px Arial, sans-serif';
-  ctx.fillText('ha completado satisfactoriamente el curso de', canvas.width / 2, 340);
+        <div style="font-size: 20px; color: #718096; margin-bottom: 40px;">
+          Fecha de Emisión: ${formatFechaEmision(fechaEmision)}
+        </div>
 
-  // Nombre del curso (destacado)
-  ctx.fillStyle = '#2b6cb0';
-  ctx.font = 'bold 36px Georgia, serif';
-  ctx.fillText(`"${tituloCurso}"`, canvas.width / 2, 390);
+        <div style="font-size: 22px; font-style: italic; color: #38a169;">
+          ¡Felicitaciones por tu dedicación y esfuerzo!
+        </div>
+      </div>
 
-  // Información adicional
-  ctx.fillStyle = '#718096';
-  ctx.font = '20px Arial, sans-serif';
-  ctx.fillText(`Código de Verificación: ${codigoCertificado}`, canvas.width / 2, 460);
-  ctx.fillText(`Fecha de Emisión: ${formatFechaEmision(fechaEmision)}`, canvas.width / 2, 500);
+      <div style="display: flex; justify-content: space-between; width: 100%; margin-top: 40px;">
+        <div style="text-align: center;">
+          <div style="border-top: 2px solid #2d3748; width: 250px; margin: 0 auto 10px;"></div>
+          <div style="font-size: 20px; color: #2d3748;">Director Académico</div>
+        </div>
 
-  // Mensaje de felicitación
-  ctx.fillStyle = '#38a169';
-  ctx.font = 'italic 22px Georgia, serif';
-  ctx.fillText('¡Felicitaciones por tu dedicación y esfuerzo!', canvas.width / 2, 550);
+        <div style="text-align: center;">
+          <div style="border-top: 2px solid #2d3748; width: 250px; margin: 0 auto 10px;"></div>
+          <div style="font-size: 20px; color: #2d3748;">Sello Institucional</div>
+        </div>
+      </div>
+    `;
 
-  // Firma y sello
-  ctx.fillStyle = '#2d3748';
-  ctx.font = '20px Arial, sans-serif';
-  ctx.fillText('_______________________________', canvas.width / 2 - 200, 650);
-  ctx.fillText('Director Académico', canvas.width / 2 - 200, 680);
+    // Agregar al DOM temporalmente
+    document.body.appendChild(certificadoDiv);
 
-  ctx.fillText('_______________________________', canvas.width / 2 + 200, 650);
-  ctx.fillText('Sello Institucional', canvas.width / 2 + 200, 680);
+    // Convertir a canvas usando html2canvas
+    const canvas = await html2canvas(certificadoDiv, {
+      width: 1200,
+      height: 800,
+      scale: 2,
+      useCORS: true,
+      allowTaint: true,
+      backgroundColor: '#ffffff'
+    });
 
-  // Elementos decorativos
-  ctx.strokeStyle = '#ffd700';
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  ctx.moveTo(100, 600);
-  ctx.lineTo(1100, 600);
-  ctx.stroke();
+    // Remover el elemento temporal
+    document.body.removeChild(certificadoDiv);
 
-  // Convertir a imagen y descargar
-  canvas.toBlob((blob) => {
-    if (blob) {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `certificado-${codigoCertificado}.png`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    }
-  }, 'image/png', 1.0);
+    // Crear PDF horizontal (landscape)
+    const pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'px',
+      format: [1200, 800]
+    });
+
+    // Agregar la imagen al PDF
+    const imgData = canvas.toDataURL('image/png', 1.0);
+    pdf.addImage(imgData, 'PNG', 0, 0, 1200, 800);
+
+    // Descargar el PDF
+    pdf.save(`certificado-${codigoCertificado}.pdf`);
+
+  } catch (error) {
+    console.error('Error al generar el certificado PDF:', error);
+    alert('Error al generar el certificado. Por favor, inténtalo de nuevo.');
+  }
 };
 
 export default {

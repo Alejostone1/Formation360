@@ -34,7 +34,7 @@ const ModuloCard: React.FC<ModuloCardProps> = ({ modulo, onEdit, onDelete }) => 
         </div>
       </CardHeader>
       <CardContent>
-        <p className={`${styles.descripcionModulo} mb-4`}>{modulo.descripcion}</p>
+        <p className={`${styles.descripcionModulo} mb-4 whitespace-pre-wrap`}>{modulo.descripcion}</p>
         <div className="flex justify-between items-center mb-4">
           <Badge className={styles[getEstadoModuloColor(modulo.estado)]}>
             {modulo.estado}

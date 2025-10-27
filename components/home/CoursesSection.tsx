@@ -22,7 +22,7 @@ async function fetchCourses() {
       throw new Error("Error al cargar cursos");
     }
     const data = await response.json();
-    
+
     // Parse price to number and remove unnecessary fields
     return data.map(({ codigo_acceso, precio, ...rest }: any) => ({
       ...rest,
@@ -39,10 +39,10 @@ export async function CoursesSection() {
   const courses: Course[] = await fetchCourses();
 
   return (
-    <section id="courses" className="w-full py-12 md:py-24 lg:py-32 bg-muted/40">
+    <section id="courses" className="w-full py-12 md:py-24 lg:py-32 bg-gray-50 dark:bg-gray-800">
       <div className="container px-4 md:px-6">
         <div className="flex flex-col items-center justify-center space-y-4 text-center mb-12">
-          <div className="inline-block rounded-lg bg-muted px-3 py-1 text-sm">Cursos Destacados</div>
+          <div className="inline-block rounded-full bg-gradient-to-r from-blue-500 to-purple-600 px-4 py-2 text-sm font-semibold text-white shadow-lg hover:scale-105 transition-transform duration-300">Cursos Destacados</div>
           <h2 className="text-3xl font-bold tracking-tighter sm:text-5xl">Nuestros Cursos Populares</h2>
           <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
             Explora nuestra selección de cursos diseñados para impulsar tu carrera con contenido actualizado y práctico.

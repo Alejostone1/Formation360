@@ -21,7 +21,8 @@ import {
   Star,
   Zap,
   Target,
-  BarChart3
+  BarChart3,
+  Image
 } from 'lucide-react'
 import { AdminMetric, AdminActivity, AdminPieData, AdminChartData } from '@/components/types'
 
@@ -267,6 +268,16 @@ export default function AdminDashboard() {
       bgColor: 'bg-pink-50 dark:bg-pink-900/20',
       textColor: 'text-pink-600 dark:text-pink-400',
       stats: '89 actividades'
+    },
+    {
+      title: 'Imagen Hero',
+      description: 'Cambiar imagen principal',
+      href: '/administrador/hero',
+      icon: Image,
+      color: 'from-teal-500 to-teal-600',
+      bgColor: 'bg-teal-50 dark:bg-teal-900/20',
+      textColor: 'text-teal-600 dark:text-teal-400',
+      stats: 'Imagen activa'
     }
   ]
 

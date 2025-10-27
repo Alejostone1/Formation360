@@ -60,7 +60,7 @@ export default function PurchaseInterestForm({ course }: { course: Course }) {
             </Button>
 
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                <DialogContent>
+                <DialogContent className="bg-card">
                     <DialogHeader>
                         <DialogTitle>Interés en el curso: {course.titulo}</DialogTitle>
                         <DialogDescription>

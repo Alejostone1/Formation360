@@ -47,7 +47,15 @@ const ModuloFormModal: React.FC<ModuloFormModalProps> = ({
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700">Descripción</label>
-            <textarea name="descripcion" value={formData.descripcion} onChange={onFormChange} required rows={3} className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"/>
+            <textarea
+              name="descripcion"
+              value={formData.descripcion}
+              onChange={onFormChange}
+              required
+              rows={6}
+              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm whitespace-pre-wrap"
+              placeholder="Describe el módulo. Puedes usar espacios, bullet points (- item) o presionar Enter para nuevas líneas."
+            />
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>

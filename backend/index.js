@@ -12,6 +12,7 @@ const cursosEstudianteRoutes = require('./routes/cursosEstudiante');
 const videosVistosRoutes = require('./routes/videosVistos');
 const certificadosRoutes = require('./routes/certificados')
 const actividadesRoutes = require('./routes/actividades')
+const heroRoutes = require('./routes/hero')
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -69,6 +70,9 @@ app.use('/videos-vistos', videosVistosRoutes);
 // Rutas para certificados
 app.use('/certificados', certificadosRoutes)
 app.use('/actividades', actividadesRoutes)
+
+// Rutas para imágenes del hero
+app.use('/hero', heroRoutes)
 
 // Iniciar el servidor
 app.listen(PORT, () => {

@@ -225,20 +225,20 @@ export default function CursosEstudianteManagement(): React.ReactElement {
   }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.header}>
+      <div className={`${styles.container} bg-gray-100 dark:bg-gray-900 min-h-screen`}>
+      <div className={`${styles.header} bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700`}>
         <div className={styles.filters}>
           <input
             type="text"
             placeholder="Buscar por usuario o curso..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className={styles.searchInput}
+            className={`${styles.searchInput} bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600`}
           />
           <select
             value={filterEstado}
             onChange={(e) => setFilterEstado(e.target.value)}
-            className={styles.filterSelect}
+            className={`${styles.filterSelect} bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600`}
           >
             <option value="">Todos los estados</option>
             <option value="pendiente">Pendiente</option>
@@ -254,28 +254,28 @@ export default function CursosEstudianteManagement(): React.ReactElement {
               resetAssignForm()
             }
           }}
-          className={styles.addButton}
+          className={`${styles.addButton} bg-green-600 hover:bg-green-700 text-white`}
         >
           {showAssignForm ? 'Cancelar' : 'Asignar Usuario a Curso'}
         </button>
       </div>
 
       {error && (
-        <div className={styles.error}>
+        <div className={`${styles.error} bg-red-100 dark:bg-red-900 border-red-400 dark:border-red-600 text-red-700 dark:text-red-200`}>
           {error}
-          <button onClick={() => setError('')} className={styles.errorClose}>×</button>
+          <button onClick={() => setError('')} className={`${styles.errorClose} text-red-700 dark:text-red-200 hover:bg-red-200 dark:hover:bg-red-800`}>×</button>
         </div>
       )}
 
       {showAssignForm && (
-        <div className={styles.form}>
-          <h3 className={styles.formTitle}>
+        <div className={`${styles.form} bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 shadow-lg`}>
+          <h3 className={`${styles.formTitle} text-gray-900 dark:text-white`}>
             {editingItem ? 'Editar Asignación' : 'Asignar Usuario a Curso'}
           </h3>
 
           <div className={styles.formGrid}>
             <div className={styles.formGroup}>
-              <label className={styles.label}>Seleccionar Curso *</label>
+              <label className={`${styles.label} text-gray-700 dark:text-gray-300`}>Seleccionar Curso *</label>
               <select
                 value={selectedCurso?.id_curso || ''}
                 onChange={async (e) => {
@@ -289,7 +289,7 @@ export default function CursosEstudianteManagement(): React.ReactElement {
                     setSelectedCurso(null)
                   }
                 }}
-                className={styles.select}
+                className={`${styles.select} bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600`}
                 required
               >
                 <option value="">Seleccione un curso</option>
@@ -302,12 +302,12 @@ export default function CursosEstudianteManagement(): React.ReactElement {
             </div>
 
             <div className={styles.formGroup}>
-              <label className={styles.label}>Usuario *</label>
+              <label className={`${styles.label} text-gray-700 dark:text-gray-300`}>Usuario *</label>
               {selectedUsuario ? (
-                <div className={styles.selectedUserChip}>
-                  <span>{selectedUsuario.nombre_completo}</span>
-                  <button onClick={() => setSelectedUsuario(null)}>Cambiar</button>
-                </div>
+            <div className={`${styles.selectedUserChip} bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200 border-blue-300 dark:border-blue-700`}>
+              <span>{selectedUsuario.nombre_completo}</span>
+              <button onClick={() => setSelectedUsuario(null)} className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">Cambiar</button>
+            </div>
               ) : (
                 <div>
                   <input
@@ -315,27 +315,27 @@ export default function CursosEstudianteManagement(): React.ReactElement {
                     placeholder="Buscar por nombre o email..."
                     value={userSearchTerm}
                     onChange={(e) => setUserSearchTerm(e.target.value)}
-                    className={styles.input}
+                    className={`${styles.input} bg-white dark:bg-gray-700 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600`}
                   />
                   {userSearchTerm && (
-                    <div className={styles.userSearchResults}>
-                      {filteredUsuarios.length > 0 ? (
-                        filteredUsuarios.map(user => (
-                          <div
-                            key={user.id_usuario}
-                            className={styles.userSearchResultItem}
-                            onClick={() => {
-                              setSelectedUsuario(user);
-                              setUserSearchTerm('');
-                            }}
-                          >
-                            {user.nombre_completo} - {user.email}
-                          </div>
-                        ))
-                      ) : (
-                        <div className={styles.userSearchNoResults}>No se encontraron usuarios.</div>
-                      )}
-                    </div>
+                  <div className={`${styles.userSearchResults} bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600`}>
+                    {filteredUsuarios.length > 0 ? (
+                      filteredUsuarios.map(user => (
+                        <div
+                          key={user.id_usuario}
+                          className={`${styles.userSearchResultItem} hover:bg-gray-100 dark:hover:bg-gray-600 text-gray-900 dark:text-white`}
+                          onClick={() => {
+                            setSelectedUsuario(user);
+                            setUserSearchTerm('');
+                          }}
+                        >
+                          {user.nombre_completo} - {user.email}
+                        </div>
+                      ))
+                    ) : (
+                      <div className={`${styles.userSearchNoResults} text-gray-500 dark:text-gray-400`}>No se encontraron usuarios.</div>
+                    )}
+                  </div>
                   )}
                 </div>
               )}
@@ -343,42 +343,42 @@ export default function CursosEstudianteManagement(): React.ReactElement {
           </div>
 
           {selectedCurso && (
-            <div className={styles.courseInfo}>
-              <h4>Información del Curso Seleccionado:</h4>
+            <div className={`${styles.courseInfo} bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600`}>
+              <h4 className="text-gray-900 dark:text-white">Información del Curso Seleccionado:</h4>
               <div className={styles.courseDetails}>
-                <p><strong>Título:</strong> {selectedCurso.titulo}</p>
-                <p><strong>Código de Acceso:</strong> {selectedCurso.codigo_acceso}</p>
+                <p className="text-gray-700 dark:text-gray-300"><strong className="text-gray-900 dark:text-white">Título:</strong> {selectedCurso.titulo}</p>
+                <p className="text-gray-700 dark:text-gray-300"><strong className="text-gray-900 dark:text-white">Código de Acceso:</strong> {selectedCurso.codigo_acceso}</p>
                 {selectedCurso.descripcion && (
-                  <p><strong>Descripción:</strong> {selectedCurso.descripcion}</p>
+                  <p className="text-gray-700 dark:text-gray-300"><strong className="text-gray-900 dark:text-white">Descripción:</strong> {selectedCurso.descripcion}</p>
                 )}
                 {selectedCurso.precio && (
-                  <p><strong>Precio:</strong> ${selectedCurso.precio.toLocaleString()}</p>
+                  <p className="text-gray-700 dark:text-gray-300"><strong className="text-gray-900 dark:text-white">Precio:</strong> ${selectedCurso.precio.toLocaleString()}</p>
                 )}
                 {selectedCurso.categoria_nombre && (
-                  <p><strong>Categoría:</strong> {selectedCurso.categoria_nombre}</p>
+                  <p className="text-gray-700 dark:text-gray-300"><strong className="text-gray-900 dark:text-white">Categoría:</strong> {selectedCurso.categoria_nombre}</p>
                 )}
                 {selectedCurso.estado && (
-                  <p><strong>Estado:</strong> {selectedCurso.estado}</p>
+                  <p className="text-gray-700 dark:text-gray-300"><strong className="text-gray-900 dark:text-white">Estado:</strong> {selectedCurso.estado}</p>
                 )}
               </div>
 
               {selectedCurso.modulos && selectedCurso.modulos.length > 0 && (
                 <div className={styles.modulesSection}>
-                  <h5>Módulos del Curso:</h5>
+                  <h5 className="text-gray-900 dark:text-white">Módulos del Curso:</h5>
                   <div className={styles.modulesList}>
                     {selectedCurso.modulos
                       .sort((a, b) => a.numero_orden - b.numero_orden)
                       .map((modulo) => (
-                        <div key={modulo.id_modulo} className={styles.moduleItem}>
+                        <div key={modulo.id_modulo} className={`${styles.moduleItem} bg-white dark:bg-gray-600 border-gray-200 dark:border-gray-500`}>
                           <div className={styles.moduleHeader}>
                             <span className={styles.moduleOrder}>{modulo.numero_orden}</span>
-                            <h6 className={styles.moduleTitle}>{modulo.titulo}</h6>
+                            <h6 className={`${styles.moduleTitle} text-gray-900 dark:text-white`}>{modulo.titulo}</h6>
                             <span className={`${styles.moduleBadge} ${modulo.estado === 'activo' ? styles.badgeActive : styles.badgeInactive}`}>
                               {modulo.estado}
                             </span>
                           </div>
                           {modulo.descripcion && (
-                            <p className={styles.moduleDescription}>{modulo.descripcion}</p>
+                            <p className={`${styles.moduleDescription} text-gray-700 dark:text-gray-300`}>{modulo.descripcion}</p>
                           )}
                         </div>
                       ))}
@@ -387,7 +387,7 @@ export default function CursosEstudianteManagement(): React.ReactElement {
               )}
 
               {selectedCurso.modulos && selectedCurso.modulos.length === 0 && (
-                <p className={styles.noModules}>Este curso no tiene módulos asignados aún.</p>
+                <p className={`${styles.noModules} text-gray-600 dark:text-gray-400`}>Este curso no tiene módulos asignados aún.</p>
               )}
             </div>
           )}
@@ -400,7 +400,7 @@ export default function CursosEstudianteManagement(): React.ReactElement {
                 console.log('Usuario Seleccionado:', selectedUsuario);
                 handleAssignUser();
               }}
-              className={styles.submitButton}
+              className={`${styles.submitButton} bg-blue-600 hover:bg-blue-700 text-white`}
               disabled={!selectedCurso || !selectedUsuario}
             >
               {editingItem ? 'Actualizar' : 'Asignar'}
@@ -411,7 +411,7 @@ export default function CursosEstudianteManagement(): React.ReactElement {
                 setShowAssignForm(false)
                 resetAssignForm()
               }}
-              className={styles.cancelButton}
+              className={`${styles.cancelButton} bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-400 dark:hover:bg-gray-500`}
             >
               Cancelar
             </button>
@@ -421,9 +421,9 @@ export default function CursosEstudianteManagement(): React.ReactElement {
 
       <div className={styles.grid}>
         {filteredCursosEstudiante.map((item) => (
-          <div key={item.id_curso_estudiante} className={styles.card}>
-            <div className={styles.cardHeader}>
-              <h3 className={styles.cardTitle}>
+          <div key={item.id_curso_estudiante} className={`${styles.card} bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700`}>
+            <div className={`${styles.cardHeader} bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600`}>
+              <h3 className={`${styles.cardTitle} text-gray-900 dark:text-white`}>
                 {item.usuario?.nombre_completo || `Usuario ${item.id_usuario}`}
               </h3>
               <span className={`${styles.badge} ${getEstadoBadgeClass(item.estado)}`}>
@@ -432,37 +432,37 @@ export default function CursosEstudianteManagement(): React.ReactElement {
             </div>
 
             <div className={styles.cardContent}>
-              <p className={styles.cardText}>
-                <strong>Curso:</strong> {item.curso?.titulo || `Curso ${item.id_curso}`}
+              <p className={`${styles.cardText} text-gray-700 dark:text-gray-300`}>
+                <strong className="text-gray-900 dark:text-white">Curso:</strong> {item.curso?.titulo || `Curso ${item.id_curso}`}
               </p>
-              <p className={styles.cardText}>
-                <strong>Código de Activación:</strong> {item.codigo_activacion}
-                <button onClick={() => navigator.clipboard.writeText(item.codigo_activacion)} className={styles.copyButton}>Copiar</button>
+              <p className={`${styles.cardText} text-gray-700 dark:text-gray-300`}>
+                <strong className="text-gray-900 dark:text-white">Código de Activación:</strong> {item.codigo_activacion}
+                <button onClick={() => navigator.clipboard.writeText(item.codigo_activacion)} className={`${styles.copyButton} bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500`}>Copiar</button>
               </p>
-              <p className={styles.cardText}>
-                <strong>Videos vistos:</strong> {item.videos_vistos}
+              <p className={`${styles.cardText} text-gray-700 dark:text-gray-300`}>
+                <strong className="text-gray-900 dark:text-white">Videos vistos:</strong> {item.videos_vistos}
               </p>
               {item.fecha_activacion && (
-                <p className={styles.cardText}>
-                  <strong>Activación:</strong> {new Date(item.fecha_activacion).toLocaleDateString()}
+                <p className={`${styles.cardText} text-gray-700 dark:text-gray-300`}>
+                  <strong className="text-gray-900 dark:text-white">Activación:</strong> {new Date(item.fecha_activacion).toLocaleDateString()}
                 </p>
               )}
               {item.fecha_ultimo_acceso && (
-                <p className={styles.cardText}>
-                  <strong>Último acceso:</strong> {new Date(item.fecha_ultimo_acceso).toLocaleDateString()}
+                <p className={`${styles.cardText} text-gray-700 dark:text-gray-300`}>
+                  <strong className="text-gray-900 dark:text-white">Último acceso:</strong> {new Date(item.fecha_ultimo_acceso).toLocaleDateString()}
                 </p>
               )}
               {item.comentario_curso && (
-                <p className={styles.cardText}>
-                  <strong>Comentario:</strong> {item.comentario_curso}
+                <p className={`${styles.cardText} text-gray-700 dark:text-gray-300`}>
+                  <strong className="text-gray-900 dark:text-white">Comentario:</strong> {item.comentario_curso}
                 </p>
               )}
             </div>
 
-            <div className={styles.cardActions}>
+            <div className={`${styles.cardActions} bg-gray-50 dark:bg-gray-700 border-gray-200 dark:border-gray-600`}>
               <button
                 onClick={() => handleEdit(item)}
-                className={styles.editButton}
+                className={`${styles.editButton} bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-500`}
               >
                 Editar
               </button>
@@ -478,7 +478,7 @@ export default function CursosEstudianteManagement(): React.ReactElement {
       </div>
 
       {filteredCursosEstudiante.length === 0 && (
-        <div className={styles.empty}>
+        <div className={`${styles.empty} text-gray-600 dark:text-gray-400`}>
           No se encontraron registros de cursos estudiante
         </div>
       )}

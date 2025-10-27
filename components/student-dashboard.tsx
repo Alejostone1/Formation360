@@ -90,30 +90,34 @@ export default function StudentDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-muted/40 relative overflow-hidden">
+    <div className="min-h-screen bg-background dark:bg-slate-950 relative overflow-hidden">
       <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute top-1/2 -left-40 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
-        <div className="absolute -bottom-40 right-1/3 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
+        <div className="absolute -top-40 -right-40 w-96 h-96 bg-primary/10 dark:bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
+        <div className="absolute top-1/2 -left-40 w-96 h-96 bg-primary/20 dark:bg-primary/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '2s' }}></div>
+        <div className="absolute -bottom-40 right-1/3 w-96 h-96 bg-secondary/20 dark:bg-secondary/30 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '4s' }}></div>
       </div>
 
-      <IntegratedStudentSidebar
-        sidebarItems={sidebarItems}
-        activeSection={activeSection}
-        setActiveSection={setActiveSection}
-        onLogout={handleLogout}
-        isOpen={sidebarOpen}
-        setOpen={setSidebarOpen}
-      />
+      <div className="relative z-10 lg:flex">
+        <div className="dark:border-r-0 lg:dark:border-r lg:dark:border-slate-800">
+          <IntegratedStudentSidebar
+            sidebarItems={sidebarItems}
+            activeSection={activeSection}
+            setActiveSection={setActiveSection}
+            onLogout={handleLogout}
+            isOpen={sidebarOpen}
+            setOpen={setSidebarOpen}
+          />
+        </div>
 
-      <div className="lg:ml-64 relative z-10">
-        <Header
-          studentName={studentData?.nombre_completo || ''}
-          avatar={studentData?.avatar || ''}
-          onMenuClick={() => setSidebarOpen(true)}
-          title="Panel de Estudiante"
-        />
-        <main className="p-4 sm:p-6 lg:p-8">{renderContent()}</main>
+        <div className="flex-1 lg:ml-64">
+          <Header
+            studentName={studentData?.nombre_completo || ''}
+            avatar={studentData?.avatar || ''}
+            onMenuClick={() => setSidebarOpen(true)}
+            title="Panel de Estudiante"
+          />
+          <main className="p-4 sm:p-6 lg:p-8">{renderContent()}</main>
+        </div>
       </div>
 
       <Chatbot />

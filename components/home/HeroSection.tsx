@@ -1,8 +1,34 @@
 
+'use client'
+
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { useState, useEffect } from "react";
 
 export function HeroSection() {
+  const [heroImage, setHeroImage] = useState<string>("/placeholder.svg");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchActiveHeroImage = async () => {
+      try {
+        const response = await fetch('http://localhost:3001/hero/active');
+        if (response.ok) {
+          const data = await response.json();
+          if (data.image_url) {
+            setHeroImage(data.image_url);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching active hero image:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchActiveHeroImage();
+  }, []);
+
   return (
     <section className="relative w-full py-12 md:py-24 lg:py-32 xl:py-48 overflow-hidden">
       {/* Background with animated gradient */}
@@ -87,7 +113,7 @@ export function HeroSection() {
                 alt="Hero"
                 className="relative mx-auto aspect-video overflow-hidden rounded-2xl object-cover sm:w-full lg:order-last lg:aspect-square shadow-2xl hover:shadow-3xl transition-shadow duration-500"
                 height="550"
-                src="/placeholder.svg"
+                src={heroImage}
                 width="550"
               />
 
