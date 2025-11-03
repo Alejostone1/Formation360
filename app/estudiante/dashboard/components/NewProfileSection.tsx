@@ -13,9 +13,10 @@ type NewProfileSectionProps = {
   activity: ActivityItem[] // This will be ignored
   courses: Course[]
   videos: any[]
+  onProfileUpdate: () => void
 }
 
-export default function NewProfileSection({ student, courses, videos }: NewProfileSectionProps) {
+export default function NewProfileSection({ student, courses, videos, onProfileUpdate }: NewProfileSectionProps) {
   const [isEditing, setIsEditing] = useState(false)
 
   const formatDate = (dateString: string) => {
@@ -33,7 +34,7 @@ export default function NewProfileSection({ student, courses, videos }: NewProfi
       <Card className="bg-card text-card-foreground shadow-lg">
         <CardHeader className="text-center p-6">
           <Avatar className="w-28 h-28 mx-auto ring-4 ring-primary/20 shadow-md">
-            <AvatarImage src={student.avatar} />
+            <AvatarImage src={student.avatar ? `http://localhost:3001${student.avatar}` : undefined} />
             <AvatarFallback className="text-4xl bg-primary/10 text-primary">
               {student.nombre_completo.split(' ').map((n: string) => n[0]).join('')}
             </AvatarFallback>
@@ -54,16 +55,41 @@ export default function NewProfileSection({ student, courses, videos }: NewProfi
               </div>
               <Separator className="my-6" />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-md">
-                <div className="flex items-center gap-3"><Phone className="w-5 h-5 text-muted-foreground" /><span>{student.telefono || 'No especificado'}</span></div>
-                <div className="flex items-center gap-3"><MapPin className="w-5 h-5 text-muted-foreground" /><span>{student.ciudad || 'No especificado'}, {student.pais}</span></div>
-                <div className="flex items-center gap-3 sm:col-span-2"><MapPin className="w-5 h-5 text-muted-foreground" /><span>{student.direccion || 'No especificado'}</span></div>
-                <div className="flex items-center gap-3"><CalendarDays className="w-5 h-5 text-muted-foreground" /><span>Miembro desde: {formatDate(student.fecha_registro)}</span></div>
-                <div className="flex items-center gap-3"><LogIn className="w-5 h-5 text-muted-foreground" /><span>Último acceso: {formatDate(student.fecha_ultimo_acceso)}</span></div>
+                <div className="flex items-center gap-3">
+                  <Phone className="w-5 h-5 text-muted-foreground" />
+                  <div>
+                    <span className="font-medium">Teléfono:</span> {student.telefono || 'No especificado'}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <MapPin className="w-5 h-5 text-muted-foreground" />
+                  <div>
+                    <span className="font-medium">Ciudad:</span> {student.ciudad || 'No especificado'}, {student.pais}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3 sm:col-span-2">
+                  <MapPin className="w-5 h-5 text-muted-foreground" />
+                  <div>
+                    <span className="font-medium">Dirección:</span> {student.direccion || 'No especificado'}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CalendarDays className="w-5 h-5 text-muted-foreground" />
+                  <div>
+                    <span className="font-medium">Miembro desde:</span> {formatDate(student.fecha_registro)}
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <LogIn className="w-5 h-5 text-muted-foreground" />
+                  <div>
+                    <span className="font-medium">Último acceso:</span> {formatDate(student.fecha_ultimo_acceso)}
+                  </div>
+                </div>
               </div>
             </>
           ) : (
             <>
-              <EditProfile student={student} />
+              <EditProfile student={student} onUpdate={() => { onProfileUpdate(); setIsEditing(false); }} />
               <button
                 onClick={() => setIsEditing(false)}
                 className="mt-4 px-4 py-2 bg-gray-600 text-white rounded-md"

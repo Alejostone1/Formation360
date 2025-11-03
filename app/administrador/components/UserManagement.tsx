@@ -3,8 +3,9 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select'
+import { useToast } from '@/hooks/use-toast'
 import UserTable from '../usuarios/components/UserTable'
-import UserFormModal from '../usuarios/components/UserFormModal'
+import UserFormModal, { UserFormData } from '../usuarios/components/UserFormModal'
 import UserDetailModal from '../usuarios/components/UserDetailModal'
 import { filtrarUsuariosPorRol, filtrarUsuariosPorEstado, ordenarUsuariosPorNombre } from '../usuarios/lib/usuariosUtils'
 import styles from '../usuarios/styles/usuarios.module.css'
@@ -45,6 +46,7 @@ export default function UserManagement() {
   const [editingUser, setEditingUser] = useState<User | null>(null)
   const [viewingUser, setViewingUser] = useState<User | null>(null)
   const [userCourses, setUserCourses] = useState<any[]>([])
+  const { toast } = useToast()
 
   type FormData = {
     email: string
@@ -77,10 +79,10 @@ export default function UserManagement() {
         const data = await response.json()
         setUsers(ordenarUsuariosPorNombre(data))
       } else {
-        alert('Error al cargar usuarios')
+        toast({ title: "Error", description: "Error al cargar usuarios", variant: "destructive" })
       }
     } catch (error) {
-      alert('Error de conexión')
+      toast({ title: "Error de Conexión", description: "No se pudo conectar con el servidor", variant: "destructive" })
     }
   }
 
@@ -126,41 +128,49 @@ export default function UserManagement() {
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (submitData: UserFormData) => {
+    console.log('Datos a enviar al backend:', submitData);
     if (editingUser) {
       try {
         const response = await fetch(`http://localhost:3001/users/${editingUser.id_usuario}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(submitData),
         })
+        console.log('Respuesta del backend (PUT):', response.status, response.statusText);
         if (response.ok) {
-          alert('Usuario actualizado')
+          toast({ title: "Éxito", description: "Usuario actualizado correctamente." })
           setIsModalOpen(false)
           fetchUsers()
         } else {
-          alert('Error al actualizar')
+          const errorData = await response.json();
+          console.log('Error del backend (PUT):', errorData);
+          toast({ title: "Error", description: errorData.error || "No se pudo actualizar el usuario.", variant: "destructive" })
         }
-      } catch {
-        alert('Error de conexión')
+      } catch (error) {
+        console.log('Error de conexión (PUT):', error);
+        toast({ title: "Error de Conexión", description: "No se pudo conectar con el servidor", variant: "destructive" })
       }
     } else {
       try {
         const response = await fetch('http://localhost:3001/users', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(submitData),
         })
+        console.log('Respuesta del backend (POST):', response.status, response.statusText);
         if (response.ok) {
-          alert('Usuario agregado')
+          toast({ title: "Éxito", description: "Usuario agregado correctamente." })
           setIsModalOpen(false)
           fetchUsers()
         } else {
-          alert('Error al agregar usuario')
+          const errorData = await response.json();
+          console.log('Error del backend (POST):', errorData);
+          toast({ title: "Error", description: errorData.error || "No se pudo agregar el usuario.", variant: "destructive" })
         }
-      } catch {
-        alert('Error de conexión')
+      } catch (error) {
+        console.log('Error de conexión (POST):', error);
+        toast({ title: "Error de Conexión", description: "No se pudo conectar con el servidor", variant: "destructive" })
       }
     }
   }
@@ -170,13 +180,13 @@ export default function UserManagement() {
     try {
       const response = await fetch(`http://localhost:3001/users/${id}`, { method: 'DELETE' })
       if (response.ok) {
-        alert('Usuario eliminado')
+        toast({ title: "Éxito", description: "Usuario eliminado correctamente." })
         fetchUsers()
       } else {
-        alert('Error al eliminar')
+        toast({ title: "Error", description: "No se pudo eliminar el usuario.", variant: "destructive" })
       }
     } catch {
-      alert('Error de conexión')
+      toast({ title: "Error de Conexión", description: "No se pudo conectar con el servidor", variant: "destructive" })
     }
   }
 
@@ -241,7 +251,7 @@ export default function UserManagement() {
         formData={formData}
         onClose={() => setIsModalOpen(false)}
         onFormChange={handleFormChange}
-        onSubmit={handleSubmit}
+        onSubmit={handleSubmit as any}
       />
 
       <UserDetailModal

@@ -9,7 +9,7 @@ const router = express.Router();
 // Configuración de multer para subir fotos de perfil
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    cb(null, 'uploads/imagenes_usuarios/');
   },
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
@@ -48,7 +48,7 @@ router.post('/upload', upload.single('photo'), (req, res) => {
   if (!req.file) {
     return res.status(400).json({ error: 'No se subió ningún archivo' });
   }
-  res.json({ url: `http://localhost:3001/uploads/${req.file.filename}` });
+  res.json({ url: `/uploads/${req.file.filename}` });
 });
 
 module.exports = router;

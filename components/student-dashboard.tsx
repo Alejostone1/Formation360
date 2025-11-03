@@ -73,7 +73,7 @@ export default function StudentDashboard() {
 
     switch (activeSection) {
       case 'profile':
-        return <NewProfileSection student={studentData} activity={activityFeed} courses={courses} videos={myVideos} />
+        return <NewProfileSection student={studentData} activity={activityFeed} courses={courses} videos={myVideos} onProfileUpdate={refreshData} />
       case 'courses':
         return <NewCoursesSection courses={courses} onCourseSelect={handleSelectCourse} onCourseActivated={refreshData} />
       case 'videos':
@@ -85,7 +85,7 @@ export default function StudentDashboard() {
       case 'recommendations':
         return <NewRecommendationsSection />
       default:
-        return <NewProfileSection student={studentData} activity={activityFeed} courses={courses} videos={myVideos} />
+        return <NewProfileSection student={studentData} activity={activityFeed} courses={courses} videos={myVideos} onProfileUpdate={refreshData} />
     }
   }
 

@@ -4,10 +4,14 @@ const path = require('path');
 // Configuración de almacenamiento para Multer
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'uploads/');
+    if (file.fieldname === 'foto_perfil') {
+      cb(null, 'uploads/imagenes_usuarios/');
+    } else {
+      cb(null, 'uploads/');
+    }
   },
   filename: (req, file, cb) => {
-    cb(null, Date.now() + '-' + file.originalname);
+    cb(null, Date.now() + '-' + Math.round(Math.random() * 1E9) + path.extname(file.originalname));
   }
 });
 

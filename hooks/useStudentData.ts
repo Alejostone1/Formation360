@@ -36,7 +36,10 @@ export function useStudentData(userId: number | null) {
         timestamp: a.fecha_actividad,
       }));
 
-      setStudentData(student);
+      // Map foto_perfil_url to avatar
+      const studentWithAvatar = { ...student, avatar: student.foto_perfil_url };
+
+      setStudentData(studentWithAvatar);
       setCourses(courses);
       setMyVideos(myVideos);
       setCertificates(certificates);

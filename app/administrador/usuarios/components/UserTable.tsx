@@ -9,6 +9,7 @@ interface User {
   direccion?: string;
   ciudad?: string;
   pais?: string;
+  foto_perfil_url?: string;
   rol: 'administrador' | 'estudiante';
   estado: 'activo' | 'inactivo' | 'suspendido';
   fecha_registro: string;
@@ -68,9 +69,12 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete, onView }
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
           <thead>
-            <tr class="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700">
+            <tr className="bg-gradient-to-r from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-700">
               <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                 ID
+              </th>
+              <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
+                Foto
               </th>
               <th className="px-6 py-4 text-left text-xs font-bold text-gray-700 dark:text-gray-300 uppercase tracking-wider">
                 Usuario
@@ -92,7 +96,7 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete, onView }
           <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-100 dark:divide-gray-700">
             {users.length === 0 ? (
               <tr>
-                <td colSpan={6} className="px-6 py-12 text-center">
+                <td colSpan={7} className="px-6 py-12 text-center">
                   <div className="flex flex-col items-center gap-3">
                     <AlertCircle className="w-12 h-12 text-gray-400 dark:text-gray-600" />
                     <p className="text-gray-500 dark:text-gray-400 font-medium">No hay usuarios registrados</p>
@@ -114,8 +118,16 @@ const UserTable: React.FC<UserTableProps> = ({ users, onEdit, onDelete, onView }
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white font-bold text-sm shadow-md">
-                        {user.nombre_completo.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white font-bold text-sm shadow-md overflow-hidden">
+                        {user.foto_perfil_url ? (
+                          <img
+                            src={`http://localhost:3001${user.foto_perfil_url}`}
+                            alt={user.nombre_completo}
+                            className="w-full h-full object-cover"
+                          />
+                        ) : (
+                          user.nombre_completo.split(' ').map(n => n[0]).slice(0, 2).join('')
+                        )}
                       </div>
                       <div>
                         <div className="text-sm font-semibold text-gray-900 dark:text-white">
