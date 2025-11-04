@@ -52,6 +52,7 @@ Antes de comenzar, asegúrate de tener instalados los siguientes programas:
 - **Zod** - Validación de esquemas
 - **Recharts** - Gráficos y visualizaciones
 - **SweetAlert2** - Modales y alertas
+- **jsPDF** (versión 3.0.3), junto con **html2canvas** para convertir el contenido HTML del certificado en una imagen que luego se agrega al PDF.
 - **Sonner** - Notificaciones toast
 
 #### Backend (Express.js + Node.js)
